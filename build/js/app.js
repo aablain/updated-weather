@@ -33,9 +33,9 @@ function Weather() {
 
 }
 
-Weather.prototype.getWeather = function(city) {
+Weather.prototype.getWeather = function(city, displayFunction) {
   $.get('http://api.openweathermap.org/data/2.5/weather?q=' + city + '&appid=' + apiKey).then(function(response) {
-    $('.showWeather').text("The humidity in " + city + " is " + response.main.humidity + "%");
+    displayFunction(city, response.main.humidity);
   }).fail(function(error) {
     $('.showWeather').text(error.responseJSON.message);
   });
@@ -73,12 +73,16 @@ $(document).ready(function(){
 
 var Weather = require('./../js/weather.js').weatherModule;
 
+var displayHumidity = function(city, humidityData) {
+  $('.showWeather').text("The humidity in " + city + " is " + humidityData + "%.")
+}
+
 $(document).ready(function() {
   var currentWeatherObject = new Weather();
   $('#weatherLocation').click(function() {
     var city = $('#location').val();
     $('#location').val("");
-  currentWeatherObject.getWeather(city);
+  currentWeatherObject.getWeather(city, displayHumidity);
   });
 });
 
